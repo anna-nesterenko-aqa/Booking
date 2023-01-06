@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id "com.github.spacialcircumstances.gradle-cucumber-reporting" version "0.1.21"
+}
+
+group 'org.booking'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    ioCucumberVersion = '5.6.0'
+    junitVersion = '5.8.1'
+    bonigarciaVersion = '3.8.1'
+    seleniumVersion = '4.7.2'
+}
+
+dependencies {
+    implementation(
+            ['io.cucumber:cucumber-java:' + ioCucumberVersion],
+            ['io.cucumber:cucumber-junit:' + ioCucumberVersion],
+            ['io.cucumber:cucumber-junit-platform-engine:' + ioCucumberVersion],
+            ['org.junit.jupiter:junit-jupiter-engine:' + junitVersion],
+            ['org.junit.jupiter:junit-jupiter-api:' + junitVersion],
+            ['io.github.bonigarcia:webdrivermanager:' + bonigarciaVersion],
+            ['org.seleniumhq.selenium:selenium-java:' + seleniumVersion]
+    )
+}
+
+test {
+    systemProperty("cucumber.plugin", "json:build/cucumber-report/json/cucumber-report.json, " +
+            "junit:build/cucumber-report/xml/cucumber-results.xml, " +
+            "html:build/cucumber-report/html/cucumber-report.html")
+    useJUnitPlatform()
+}
+
+cucumberReports {
+    classifications = [Browser: 'Chrome']
+    projectNameOverride = 'Booking'
+    outputDir = file('build/cucumber-report')
+    reports = files('build/cucumber-report/json/cucumber-report.json')
+}
